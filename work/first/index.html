@@ -90,14 +90,14 @@
     });
 // 第5問  id='q5'の要素をクリックしたらこの要素にlargeというクラスを付与せよ。
     $('#q5').click(function() {
-          $(this).addClass('large');
-        });
+      $(this).addClass('large');
+    });
 // 第6問  id='q6'の要素をクリックしたらこの要素を2秒かけてmargin-topとmargin-leftを100pxの位置に移動させよ。
     $('#q6').click(function() {
-        $(this).animate({
-            'marginLeft': 100,
-            'marginTop': 100
-        }, 2000);
+      $(this).animate({
+        'marginLeft': 100,
+        'marginTop': 100
+      }, 2000);
     });
 // 第7問  id='q7'の子要素をクリックしたら、その要素のインデックス（何番目か）をconsole.log()とalert()を用いて表示させよ。
     $('#q7').find('li').click(function() {
@@ -121,7 +121,7 @@
       var num = $(this).index();
       $('#q11').find('li').eq(num).addClass('large');
     });
-});
+  });
 </script>
 </body>
 </html>

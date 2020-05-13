@@ -87,9 +87,19 @@
       // 今回やるのはソート機能です。
       // selectボックスをクリックして言語を選び、その言語と関係のあるリストだけが表示されるプログラムです。
       $(function() {
-        $('.select').change(function(){
+        $('.select').change(function() {
           var value = $(this).val();
-          $('li').show();
+          $('.list').find('li').each(function () {
+            var data = $(this).data('category-type');
+            if (data == value) {
+              $(this).show();
+            } else {
+              $(this).hide();
+            }
+            $('.select').click(function(){
+              $(this).val('all').data().show();
+            });
+          });
           
         });
       });
