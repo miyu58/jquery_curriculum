@@ -86,6 +86,13 @@
     <script>
       // 今回やるのはソート機能です。
       // selectボックスをクリックして言語を選び、その言語と関係のあるリストだけが表示されるプログラムです。
+      $(function() {
+        $('.select').change(function(){
+          var value = $(this).val();
+          $('li').show();
+          
+        });
+      });
       // [処理の流れ]
       // ・セレクトボックスをクリックする。
       // ・セレクトボックスのvalueとliのdata-category-typeが一致しているものをだけ表示させる。
