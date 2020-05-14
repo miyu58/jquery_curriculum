@@ -96,11 +96,10 @@
             } else {
               $(this).hide();
             }
-            $('.select').click(function(){
-              $(this).val('all').data().show();
+            $('.select').val('all').click(function() {
+              $(this).data('category-type').show();
             });
           });
-          
         });
       });
       // [処理の流れ]
