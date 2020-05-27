@@ -88,17 +88,22 @@
       // selectボックスをクリックして言語を選び、その言語と関係のあるリストだけが表示されるプログラムです。
       $(function() {
         $('.select').change(function(){
-          var val = $(this).val();
-          $('.list').find('li').each(function(){
-            var data = $(this).data('category-type');
-            if (val == 'all'){
-              $(this).show();
-            }else if(data==val){
-              $(this).show();
-            }else{
-              $(this).hide();
-            }
-          });
+          var val = $(this).val();//valを全て取得
+          if (val === 'all') {
+            $('.list').find('li').show();//全て表示
+          } else {//falseの場合下記の処理実行
+            $('.list').find('li').each(function(index, Element){　//Element==this
+              var data = $(this).data('category-type');//data全て取得
+              if (data === val){
+                $(Element).show();//一致しともの表示
+              } else {
+                $(Element).hide();//該当しないものは非表示
+              }
+              //== :右と左は同じ a=1 a='1'○
+              //=== :右と左は片数の種類まで同じ a=1 a='1'×
+              //今回の場合はどちらも文字列なので間違いではないと思います。内容とデータ型が比較できる===を使った方がいいと思いました。
+            });
+          }
         });
       });
       // [処理の流れ]

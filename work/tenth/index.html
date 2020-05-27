@@ -26,6 +26,27 @@
     </div>
     <script src="../../common/js/jquery.js"></script>
     <script>
+      $(function(){
+        $('#js-search-button').on(function(){
+          var search = $('#js-search-button').val();
+          $.each(function(){
+            $.ajax({
+              url: 'https://app.rakuten.co.jp/services/api/BooksTotal/Search/20130522',
+              type: 'GET',
+              datatype: 'json',
+              data: {
+                keyword: search,
+                applicationId: '1019399324990976605',
+                booksGenreId: '001',
+                hits: 20,
+                page: 1
+              },
+            }).done(function(data){
+              console.log(data);
+            });
+          });
+        });
+      });
       // 楽天ブックスの総合検索APIを使って製作してください。
       // answerの挙動を良く見てね！
       //
