@@ -92,12 +92,12 @@
           if (val === 'all') {
             $('.list').find('li').show();//全て表示
           } else {//falseの場合下記の処理実行
-            $('.list').find('li').each(function(index, Element) {　//Element==this
-              var data = $(this).data('category-type');//data全て取得
+            $('.list').find('li').each(function(index, element) {　//Element==this
+              var data = $(element).data('category-type');//data全て取得
               if (data === val) {
-                $(Element).show();//一致しともの表示
+                $(element).show();//一致しともの表示
               } else {
-                $(Element).hide();//該当しないものは非表示
+                $(element).hide();//該当しないものは非表示
               }
               //== :右と左は同じ a=1 a='1'○
               //=== :右と左は片数の種類まで同じ a=1 a='1'×

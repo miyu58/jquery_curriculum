@@ -27,23 +27,40 @@
     <script src="../../common/js/jquery.js"></script>
     <script>
       $(function(){
-        $('#js-search-button').on(function(){
-          var search = $('#js-search-button').val();
-          $.each(function(){
-            $.ajax({
-              url: 'https://app.rakuten.co.jp/services/api/BooksTotal/Search/20130522',
-              type: 'GET',
-              datatype: 'json',
-              data: {
-                keyword: search,
-                applicationId: '1019399324990976605',
-                booksGenreId: '001',
-                hits: 20,
-                page: 1
-              },
-            }).done(function(data){
+        $('#js-search-button').on('click', function(){
+          var search = $('#js-search-word').val();
+          console.log(search);
+          $.ajax({
+            url: 'https://app.rakuten.co.jp/services/api/BooksTotal/Search/20130522',
+            type: 'GET',
+            datatype: 'json',
+            data: {
+              keyword: search,
+              applicationId: '1019399324990976605',
+              booksGenreId: '001',
+              hits: 20,
+              page: 1
+            },
+          }).done(function(data){
+            console.log(data);
+            $.each(data.Items, function(i, Items) {
+              console.log(Items);
+              var listItem = '<li class=' + 'lists__item__inner' + '>' +
+                            '<div class=' + 'lists__item__inner' + '>' +
+                            '<a href=' + ' class=' + 'lists__item__link' + 'target=' + '_blank' + '>' +
+                            '<img src=' + data.Items.mediumImageUrl + 'class=' + 'lists__item__img' + ' alt=' + '>' +
+                            '<p class=' + 'lists__item__detail' + '>作品名 :' + data.Items[i].Item.title + '</p>' +
+                            '<p class=' + 'lists__item__detail' + '>作者　:' + data.Items[i].Item.author + '</p>' +
+                            '<p class=' + 'lists__item__detail' + '>出版社 :' + data.Items[i].Item.publisherName + '</p>' +
+                            '</a>' + '</div>' + '</li>';
+              if (data.count > 0){
+                $('ul').append(listItem);
+              } else {
+                $('ul').before('<div class="massage">検索結果が見つかりませんでした。<br>別のキーワードで検索して下さい。</div>');
+              }
               console.log(data);
             });
+            
           });
         });
       });
