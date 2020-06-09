@@ -26,11 +26,11 @@
     </div>
     <script src="../../common/js/jquery.js"></script>
     <script>
-      $(function(){
-        $('#js-search-button').on('click', function(){
+      $(function() {
+        $('#js-search-button').on('click', function() {
           var search = $('#js-search-word').val();
           console.log(search);
-          $.ajax({
+          $.ajax ({
             url: 'https://app.rakuten.co.jp/services/api/BooksTotal/Search/20130522',
             type: 'GET',
             datatype: 'json',
@@ -41,26 +41,25 @@
               hits: 20,
               page: 1
             },
-          }).done(function(data){
+          }).done(function(data) {
             console.log(data);
+          if (data.count > 0) {
             $.each(data.Items, function(i, Items) {
               console.log(Items);
-              var listItem = '<li class=' + 'lists__item__inner' + '>' +
-                            '<div class=' + 'lists__item__inner' + '>' +
-                            '<a href=' + ' class=' + 'lists__item__link' + 'target=' + '_blank' + '>' +
-                            '<img src=' + "Items.Item.mediumImageUrl"+ ' class=' + '"lists__item__img"' + ' alt="商品画像">' +
-                            '<p class=' + 'lists__item__detail' + '>作品名 :' + data.Items[i].Item.title + '</p>' +
-                            '<p class=' + 'lists__item__detail' + '>作者　:' + data.Items[i].Item.author + '</p>' +
-                            '<p class=' + 'lists__item__detail' + '>出版社 :' + data.Items[i].Item.publisherName + '</p>' +
+              var listItem = '<li class=' + '"lists__item"' + '>' +
+                            '<div class=' + '"lists__item__inner"' + '>' +
+                            '<a href=' + ' class=' + '"lists__item__link"' + 'target=' + '_blank' + '>' +
+                            '<img src="' + Items.Item.mediumImageUrl + '" class=' + '"lists__item__img"' + ' alt="商品画像">' +
+                            '<p class=' + '"lists__item__detail"' + '>作品名 :' + data.Items[i].Item.title + '</p>' +
+                            '<p class=' + '"lists__item__detail"' + '>作者　:' + data.Items[i].Item.author + '</p>' +
+                            '<p class=' + '"lists__item__detail"' + '>出版社 :' + data.Items[i].Item.publisherName + '</p>' +
                             '</a>' + '</div>' + '</li>';
-              if (data.count > 0){
-                $('ul').append(listItem);
-              } else {
-                $('ul').before('<div class="massage">検索結果が見つかりませんでした。<br>別のキーワードで検索して下さい。</div>');
+                            $('ul').append(listItem);
+            });
+          } else {
+            $('ul').before('<div class="message">検索結果が見つかりませんでした。<br>別のキーワードで検索して下さい。</div>');
               }
               console.log(data);
-            });
-            
           });
         });
       });
