@@ -29,7 +29,7 @@
       $(function() {
         $('#js-search-button').on('click', function() {
           var search = $('#js-search-word').val();
-          // console.log(search);
+          console.log(search);
           $.ajax ({
             url: 'https://app.rakuten.co.jp/services/api/BooksTotal/Search/20130522',
             type: 'GET',
@@ -43,6 +43,7 @@
             },
           }).done(function(data) {
             $('ul').empty();
+            // console.log(data.page);
           if (data.count > 0) {
             $.each(data.Items, function(i, Items) {
               console.log(Items);
@@ -65,18 +66,22 @@
                           '<li class="next btn-item">' + '<a class="btn-anchor" href="">' + '次へ' + '</a>' + '</li>' +
                           '</ul>' + '</div>';
                           $('ul').after(pager);
-            if (data.page === 1) {
-              $('.prev').addClass('disabled');
-              $('.prev a').click(function(event) {
-                event.preventDefault();
-              });
-            } else {
-              $('.prev').removeClass('disabled');
-            }
-            var pagecount = $(data.Items[i].Item.pageCount);
-            console.log(pagecount);
+            $(function() {
+              var dataPage = data.page;
+              for (var i = 1; i < dataPage.length; i++) {
+                console.log(i);
+              }
+              if (data.page === 1) {
+                $('.prev').addClass('disabled');
+                $('.prev a').click(function(event) {
+                  event.preventDefault();
+                });
+              } else {
+                $('.prev').removeClass('disabled');
+              }
+            });
+            
           });
-          
         });
       });
       // 楽天ブックスの総合検索APIを使って製作してください。
