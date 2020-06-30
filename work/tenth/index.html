@@ -26,10 +26,32 @@
     </div>
     <script src="../../common/js/jquery.js"></script>
     <script>
+      /**
+      ・検索ボタン押した時
+      　キーワード取得
+      　20件表示
+      ・エラー
+      　
+      ・次へ押した時
+      　1つ次のページにいく
+      　ページ最後グレーアウト、キャンセル
+      ・前へを押した時
+      　1つ前のページにもどる
+      　グレーアウト
+      　イベントキャンセル
+      ●変数定義
+      ●イベント整理
+      ●関数化する
+      ●順番変える
+      **/
       $(function() {
         $('#js-search-button').on('click', function() {
           var search = $('#js-search-word').val();
+          var page = 1;
           console.log(search);
+          function getPage() {
+            
+          }
           $.ajax ({
             url: 'https://app.rakuten.co.jp/services/api/BooksTotal/Search/20130522',
             type: 'GET',
@@ -39,11 +61,11 @@
               applicationId: '1019399324990976605',
               booksGenreId: '001',
               hits: 20,
-              page: 1
+              page: page
             },
           }).done(function(data) {
             $('ul').empty();
-            // console.log(data.page);
+            $('.message').empty();
           if (data.count > 0) {
             $.each(data.Items, function(i, Items) {
               console.log(Items);
@@ -56,6 +78,7 @@
                             '<p class=' + '"lists__item__detail"' + '>出版社 :' + data.Items[i].Item.publisherName + '</p>' +
                             '</a>' + '</div>' + '</li>';
                             $('ul').append(listItem);
+                            
             });
           } else {
             $('ul').before('<div class="message">検索結果が見つかりませんでした。<br>別のキーワードで検索して下さい。</div>');
@@ -66,23 +89,35 @@
                           '<li class="next btn-item">' + '<a class="btn-anchor" href="">' + '次へ' + '</a>' + '</li>' +
                           '</ul>' + '</div>';
                           $('ul').after(pager);
-            $(function() {
-              var dataPage = data.page;
-              for (var i = 1; i < dataPage.length; i++) {
-                console.log(i);
-              }
-              if (data.page === 1) {
-                $('.prev').addClass('disabled');
-                $('.prev a').click(function(event) {
-                  event.preventDefault();
-                });
-              } else {
-                $('.prev').removeClass('disabled');
-              }
-            });
-            
+                          
+          }).fail(function(){
+            $('.message').empty();
+            $('ul').before('<div class="message">検索文字が空、もしくは半角英数1文字になっています</div>');
           });
         });
+            $(document).on('click', '.next a', function(){
+              nextPage();
+            });
+            $(document).on('click', '.prev a', function(){
+              prevPage();
+            });
+            function nextPage() {
+              if(data.page === data.pageCount) {
+                $('.next').addClass('disabled');
+                $('.next a').preventDefault();
+              } else{
+                data.page++;
+              }
+            }
+            function  prevPage() {
+              if (data.page === 1) {
+                  $('.prev').addClass('disabled');
+                  $('.prev a').preventDefault();
+                } else {
+                  $('.prev').removeClass('disabled');
+                }
+            }
+        
       });
       // 楽天ブックスの総合検索APIを使って製作してください。
       // answerの挙動を良く見てね！
