@@ -85,35 +85,38 @@
                           '<li class="next btn-item">' + '<a class="btn-anchor" href="">' + '次へ' + '</a>' + '</li>' +
                           '</ul>' + '</div>';
                           $('ul').after(pager);
-                          
+                          nextPage(data,page);
+                          prevPage(data,page);
           }).fail(function(){
             $('.message').empty();
             $('ul').before('<div class="message">検索文字が空、もしくは半角英数1文字になっています</div>');
           });
         });
-        $(document).on('click', '.next a', function(){
+        $(document).on('click', '.next a', function(event){
               nextPage();
+              event.preventDefault();
             });
-            $(document).on('click', '.prev a', function(){
+            $(document).on('click', '.prev a', function(event){
               prevPage();
+              event.preventDefault();
             });
-            function nextPage() {
+            function nextPage(data,page) {
               if(data.page === data.pageCount) {
                 $('.next').addClass('disabled');
-                $('.next a').preventDefault();
+                
               } else{
                 data.page++;
               }
+              
             }
             
-            function prevPage() {
+            function prevPage(data,page) {
               if (page === 1) {
                   $('.prev').addClass('disabled');
-                  $('.prev a').preventDefault();
+                  
                 } else {
                   $('.prev').removeClass('disabled');
                 }
-                console.log(page);
             }
             
       });
