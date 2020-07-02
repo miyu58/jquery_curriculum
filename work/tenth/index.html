@@ -47,11 +47,7 @@
       $(function() {
         $('#js-search-button').on('click', function() {
           var search = $('#js-search-word').val();
-          var page = 1;
           console.log(search);
-          function getPage() {
-            
-          }
           $.ajax ({
             url: 'https://app.rakuten.co.jp/services/api/BooksTotal/Search/20130522',
             type: 'GET',
@@ -95,7 +91,7 @@
             $('ul').before('<div class="message">検索文字が空、もしくは半角英数1文字になっています</div>');
           });
         });
-            $(document).on('click', '.next a', function(){
+        $(document).on('click', '.next a', function(){
               nextPage();
             });
             $(document).on('click', '.prev a', function(){
@@ -109,16 +105,25 @@
                 data.page++;
               }
             }
-            function  prevPage() {
-              if (data.page === 1) {
+            
+            function prevPage() {
+              if (page === 1) {
                   $('.prev').addClass('disabled');
                   $('.prev a').preventDefault();
                 } else {
                   $('.prev').removeClass('disabled');
                 }
+                console.log(page);
             }
-        
+            
       });
+      
+      var page = 1;
+      var data = {
+              hits: 20,
+              page: page,
+            };
+            
       // 楽天ブックスの総合検索APIを使って製作してください。
       // answerの挙動を良く見てね！
       //
