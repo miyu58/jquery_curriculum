@@ -48,18 +48,21 @@
         $('#js-search-button').on('click', function() {
           var search = $('#js-search-word').val();
           console.log(search);
-          $('#js-search-button').unbind('click');
           callAjax();
         });
-        $(document).on('click', '.next', function() {
-              nextPage();
-              callAjax();
-              data.page++;
-              });
-        $(document).on('click', '.prev', function() {
+        $(document).on('click', '.next', function(event) {
+          data.page++;
+          event.preventDefault();
+          nextPage();
+          return false;
+          
+        });
+        console.log(page);
+        $(document).on('click', '.prev', function(event) {
+          event.preventDefault();
           prevPage();
           callAjax();
-          data.page--;
+          return false;
         });
       });
       var callAjax = function() {
@@ -106,26 +109,30 @@
                 $('ul').before('<div class="message">検索文字が空、もしくは半角英数1文字になっています</div>');
               });
       }
-      function nextPage() {
-              if(data.page === data.pageCount) {
-                $('.next a').addClass('disabled');
-                
-              } else {
-                $('.next a').removeClass('disabled');
-              }
-              
-            }
+      var nextPage = function() {
+          
+          if(data.page === data.pageCount) {
+            $('.next').addClass('disabled');
+            
+          } else {
+            $('.next').removeClass('disabled');
+            callAjax();
+          }
+          
+        }
             
             function prevPage() {
               if (data.page === 1) {
-                  $('.prev a').addClass('disabled');
-                  event.preventDefault();
+                  $('.prev').addClass('disabled');
+                  
                 } else {
-                  $('.prev a').removeClass('disabled');
+                  $('.prev').removeClass('disabled');
                 }
             }
       var page = 1;
       var data = {
+                  applicationId: '1019399324990976605',
+                  booksGenreId: '001',
                   hits: 20,
                   page: page
             };
