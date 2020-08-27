@@ -50,15 +50,12 @@
         
         $('#js-search-button').on('click', function() {
           var search = $('#js-search-word').val();
-          $('.lists').empty();
           callAjax();
           console.log(search);
-          
         });
         $(document).on('click', '.next', function(event) {
           page++;
           callAjax();
-          
           event.preventDefault();
         });
         // console.log(page);
@@ -126,11 +123,23 @@
             }else {
               $('.prev .next').removeClass('disabled')
             }
-          }).fail(function(data) {
+          }).fail(function(err) {
+            $('.js-pager').empty();
             $('.message').empty();
-            $('.lists').before('<div class="message">検索文字が空、もしくは半角英数字になっています。</div>');
+            $('.lists').empty();
+            var status = err.status;
+            if(status === 400) {
+              $('.lists').before('<div class="message">検索文字が空、もしくは半角英数字になっています。</div>');
+            }else if(status === 404) {
+              $('.lists').before('<div class="message">検索したデータが見つかりませんでした。</div>');
+            }else if(status === 429) {
+              $('.lists').before('<div class="message">検索数が上限を達しました。時間を置いてから利用してください。</div>');
+            }else {
+              $('.lists').before('<div class="message">エラーです。</div>');
+            }
             
-            console.log(data);
+            
+            console.log(err.status);
           });
           
         }
