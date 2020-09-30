@@ -48,7 +48,6 @@
         var page = 1;
         var lastPageCount = 1;
         
-        
         $('#js-search-button').on('click', function() {/**検索ボタンクリックイベント**/
           page = 1;/**検索ボタン投下で１ページ目表示**/
           callAjax();
@@ -78,7 +77,7 @@
             $('.lists').empty();/**要素の中身を空に（小要素）**/
           }
         
-        var callAjax = function() { /**callAjaxに検索成功時と失敗時の処理を格納**/
+        function callAjax() { /**callAjaxに検索成功時と失敗時の処理を格納**/
           var search = $('#js-search-word').val();/**inputに入力された値を格納**/
           console.log(search);
           
@@ -95,6 +94,7 @@
             },
           }).done(function(data) {
             Remove();
+            Pager();
             if (data.page > 0) {/**ページが０以上のとき下記の処理実行**/
               $.each(data.Items, function(i, Items) {
                 console.log(page);
@@ -110,16 +110,14 @@
                                   '</div>' + 
                                 '</li>';
                 $('.lists').append(listItem);/**.lists内の最後に追加**/
-                
                 console.log(data);
               });
-            } else {/**検索結果なしの場合**/
-              $('.lists').before('<div class="message">検索結果が見つかりませんでした。<br>別のキーワードで検索して下さい。</div>');
-              $('.lists').after(pager);
-              $('.js-pager').remove(pager);
+            }else {
+              $('.search').after('<div class="message">検索結果が見つかりませんでした。<br>別のキーワードで検索して下さい。</div>');
+              $('.js-pager').remove();
             }
-            
-            var pager =   '<div class="js-pager">' + 
+            function Pager() {/**関数にページャー格納**/
+              var pager = '<div class="js-pager">' + 
                             '<div class="counter">' + 
                               '<span class="counter-current">' + data.page + '</span>' + '/' +
                               '<span class="counter-all">' + data.pageCount + '</span>' + 
@@ -130,55 +128,42 @@
                             '</ul>' + 
                           '</div>';
                           $('.lists').after(pager);
-            
-            
             lastPageCount = data.pageCount;/**ページ総数**/
-            if(page === 1) {
-            $('.prev').addClass('disabled');
+            if(lastPageCount === 1) {
+              $('.prev,.next').addClass('disabled')
             }else if(page === lastPageCount) {
               $('.next').addClass('disabled');
-            }else if(lastPageCount === 1) {
-              $('.prev,.next').addClass('disabled');
+            }else if(page === 1) {
+              $('.prev').addClass('disabled');
             }else {
               $('.prev,.next').removeClass('disabled')/**class消去**/
             }
+            }
+            
           }).fail(function(err) {/**失敗じの処理**/
             Remove();
-            error();
+            var status = err.status;
+            switch(status) {
+              case 400:/**パラメーテーエラー**/
+                $('.search').after('<div class="message">検索文字が空、もしくは半角英数字になっています。</div>');
+                break;
+              case 401:/**ネットワークエラー**/
+                $('.search').after('<div class="message">ネットワークに接続できませんでした。ネットワークを確認してください。</div>');
+                break;
+              case 429:/**リクエスト過多**/
+                $('.search').after('<div class="message">リクエスト数が上限を達しました。時間を置いてから利用してください。</div>');
+                break;
+              case 404:/**対象データが存在しなかった**/
+                $('.search').after('<div class="message">検索したデータが見つかりませんでした。</div>');
+                break;
+                default :
+                $('.search').after('<div class="message">error</div>');
+                break;
+            }
             console.log(status);
           });
         }
-          function error() {
-            var status = err.status;
-            switch(status) {
-            case '400':/**パラメーテーエラー**/
-              $('.lists').before('<div class="message">検索文字が空、もしくは半角英数字になっています。</div>');
-              break;
-            case '401':/**ネットワークエラー**/
-              $('.lists').before('<div class="message">ネットワークに接続できませんでした。ネットワークを確認してください。</div>');
-              break;
-            case '429':/**リクエスト過多**/
-              $('.lists').before('<div class="message">リクエスト数が上限を達しました。時間を置いてから利用してください。</div>');
-              break;
-            case '404':/**対象データが存在しなかった**/
-              $('.lists').before('<div class="message">検索したデータが見つかりませんでした。</div>');
-              break;
-            default:
-              $('.lists').before('<div class="message">システムエラーです。</div>');
-            }
-          
-          // function Remove() {
-          //   $('.js-pager').remove();/**指定した要素ごと消去**/
-          //   $('.message').empty();
-          //   $('.lists').empty();/**要素の中身を空に（小要素）**/
-          // }
-          
-          
-          
-          // switch文
-          // 関数化
-        }
-
+        
       });
       
       
