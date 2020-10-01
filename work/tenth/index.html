@@ -58,6 +58,7 @@
           }else {/**持っていなかったら（false）次のページへ**/
             page++;
             callAjax();/**呼び出し**/
+            $('html, body').animate({scrollTop: 0},0);/**一番上に0秒で戻り**/
             event.preventDefault();/**これが無いとエラーになる。なぜ**/
           }
         });
@@ -68,6 +69,7 @@
           }else {
             page--;
             callAjax();
+            $('html, body').animate({scrollTop: 0},0);/**一番上に0秒で戻り**/
             event.preventDefault();/**なぜ**/
           }
         });
@@ -140,9 +142,9 @@
             }
             }
             
-          }).fail(function(err) {/**失敗じの処理**/
+          }).fail(function(error) {/**失敗じの処理**/
             Remove();
-            var status = err.status;
+            var status = error.status;
             switch(status) {
               case 400:/**パラメーテーエラー**/
                 $('.search').after('<div class="message">検索文字が空、もしくは半角英数字になっています。</div>');
@@ -160,7 +162,7 @@
                 $('.search').after('<div class="message">error</div>');
                 break;
             }
-            console.log(status);
+            console.log(error);
           });
         }
         
