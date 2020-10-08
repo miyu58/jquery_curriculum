@@ -52,28 +52,26 @@
           page = 1;/**検索ボタン投下で１ページ目表示**/
           callAjax();
         });
+
         $(document).on('click', '.next', function(event) {
-          if($(this).hasClass('disabled') === true) {/**nextがdisabled持っていたらクリック無効**/
-            event.preventDefault();
-          }else {/**持っていなかったら（false）次のページへ**/
+          event.preventDefault();/**ture**/
+          if(!$(this).hasClass('disabled')) {/**nextがdisabled持っていなかったら(fals)下記の処理**/
             page++;
             callAjax();/**呼び出し**/
-            $('html, body').animate({scrollTop: 0},0);/**一番上に0秒で戻り**/
-            event.preventDefault();/**これが無いとエラーになる。なぜ**/
-          }
+            $('html, body').animate({scrollTop: 0}, 0);/**一番上に0秒で戻り**/
+          } 
         });
+
         $(document).on('click', '.prev', function(event) {/**前へをクリック**/
+          event.preventDefault();/**なぜ**/
           console.log($(this).hasClass('disabled'));
-          if($(this).hasClass('disabled') === true){/**prevに'disabled'が付加(true)であればボタン無効化**/
-            event.preventDefault();
-          }else {
+          if(!$(this).hasClass('disabled')) {/**prevに'disabled'が付加(true)であればボタン無効化**/
             page--;
             callAjax();
-            $('html, body').animate({scrollTop: 0},0);/**一番上に0秒で戻り**/
-            event.preventDefault();/**なぜ**/
+            $('html, body').animate({scrollTop: 0}, 0);/**一番上に0秒で戻り**/
           }
         });
-        function Remove() {
+        function remove() {
             $('.js-pager').remove();/**指定した要素ごと消去**/
             $('.message').empty();
             $('.lists').empty();/**要素の中身を空に（小要素）**/
@@ -95,30 +93,30 @@
               page: page
             },
           }).done(function(data) {
-            Remove();
-            Pager();
-            if (data.page > 0) {/**ページが０以上のとき下記の処理実行**/
-              $.each(data.Items, function(i, Items) {
+            remove();
+            pager();
+            if(data.page > 0) {/**ページが０以上のとき下記の処理実行**/
+              $.each(data.Items, function(i, items) {
                 console.log(page);
-                console.log(Items);
+                console.log(items);
                 var listItem = '<li class=' + '"lists__item"' + '>' +
                                   '<div class=' + '"lists__item__inner"' + '>' +
                                     '<a href=' + ' class=' + '"lists__item__link"' + 'target=' + '_blank' + '>' +
-                                      '<img src="' + Items.Item.mediumImageUrl + '" class=' + '"lists__item__img"' + ' alt="商品画像">' +
-                                      '<p class=' + '"lists__item__detail"' + '>作品名 :' + data.Items[i].Item.title + '</p>' +
-                                      '<p class=' + '"lists__item__detail"' + '>作者　:' + data.Items[i].Item.author + '</p>' +
-                                      '<p class=' + '"lists__item__detail"' + '>出版社 :' + data.Items[i].Item.publisherName + '</p>' +
+                                      '<img src="' + items.Item.mediumImageUrl + '" class=' + '"lists__item__img"' + ' alt="商品画像">' +
+                                      '<p class=' + '"lists__item__detail"' + '>作品名 :' + items.Item.title + '</p>' +
+                                      '<p class=' + '"lists__item__detail"' + '>作者　:' + items.Item.author + '</p>' +
+                                      '<p class=' + '"lists__item__detail"' + '>出版社 :' + items.Item.publisherName + '</p>' +
                                     '</a>' + 
                                   '</div>' + 
                                 '</li>';
-                $('.lists').append(listItem);/**.lists内の最後に追加**/
+                $('.lists').html(listItem);/**.lists内の最後に追加**/
                 console.log(data);
               });
-            }else {
+            } else {
               $('.search').after('<div class="message">検索結果が見つかりませんでした。<br>別のキーワードで検索して下さい。</div>');
               $('.js-pager').remove();
             }
-            function Pager() {/**関数にページャー格納**/
+            function pager() {/**関数にページャー格納**/
               var pager = '<div class="js-pager">' + 
                             '<div class="counter">' + 
                               '<span class="counter-current">' + data.page + '</span>' + '/' +
@@ -130,27 +128,27 @@
                             '</ul>' + 
                           '</div>';
                           $('.lists').after(pager);
-            lastPageCount = data.pageCount;/**ページ総数**/
-            if(lastPageCount === 1) {
-              $('.prev,.next').addClass('disabled')
-            }else if(page === lastPageCount) {
-              $('.next').addClass('disabled');
-            }else if(page === 1) {
-              $('.prev').addClass('disabled');
-            }else {
-              $('.prev,.next').removeClass('disabled')/**class消去**/
-            }
+              lastPageCount = data.pageCount;/**ページ総数**/
+              if(lastPageCount === 1) {
+                $('.prev,.next').addClass('disabled')
+              } else if (page === lastPageCount) {
+                $('.next').addClass('disabled');
+              } else if (page === 1) {
+                $('.prev').addClass('disabled');
+              } else {
+                $('.prev,.next').removeClass('disabled')/**class消去**/
+              }
             }
             
           }).fail(function(error) {/**失敗じの処理**/
-            Remove();
+            remove();
             var status = error.status;
             switch(status) {
+              case 0:/**ネットワークエラー**/
+                $('.search').after('<div class="message">ネットワークに接続できませんでした。ネットワークを確認してください。</div>');
+                break;
               case 400:/**パラメーテーエラー**/
                 $('.search').after('<div class="message">検索文字が空、もしくは半角英数字になっています。</div>');
-                break;
-              case 401:/**ネットワークエラー**/
-                $('.search').after('<div class="message">ネットワークに接続できませんでした。ネットワークを確認してください。</div>');
                 break;
               case 429:/**リクエスト過多**/
                 $('.search').after('<div class="message">リクエスト数が上限を達しました。時間を置いてから利用してください。</div>');
@@ -158,7 +156,7 @@
               case 404:/**対象データが存在しなかった**/
                 $('.search').after('<div class="message">検索したデータが見つかりませんでした。</div>');
                 break;
-                default :
+              default:
                 $('.search').after('<div class="message">error</div>');
                 break;
             }
@@ -223,7 +221,13 @@
       //   </ul>
       // </div>
       //
-      //
+      //  修正点　2020/10/01
+      //  1. 96.97変数名小文字にする
+      //  2. 106-108[i]いらない
+      //  3. 112 $('.lists').html(listItem);eachから出す（同じ処理繰り返しているため）
+      //  4. 上記html()で20件表示できるように修正して
+      //  5. done/failの内容関数化
+      //  6.type/datatypeの説明次回
 
 
 
