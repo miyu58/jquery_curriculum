@@ -47,6 +47,7 @@
       $(function() {
         var page = 1;
         var lastPageCount = 1;
+
         
         $('#js-search-button').on('click', function() {/**検索ボタンクリックイベント**/
           page = 1;/**検索ボタン投下で１ページ目表示**/
@@ -98,10 +99,7 @@
             pager();
             itemData();
             function itemData() {
-              $('.lists').html(function(index, listItem) {
-                if(data.page > 0) {/**ページが０以上のとき下記の処理実行**/
-                  $.each(data.Items, function(i, items) {
-                    listItem = '<li class=' + '"lists__item"' + '>' +
+                    var listItem = '<li class=' + '"lists__item"' + '>' +
                                   '<div class=' + '"lists__item__inner"' + '>' +
                                     '<a href=' + ' class=' + '"lists__item__link"' + 'target=' + '_blank' + '>' +
                                       '<img src="' + items.Item.mediumImageUrl + '" class=' + '"lists__item__img"' + ' alt="商品画像">' +
@@ -111,13 +109,16 @@
                                     '</a>' + 
                                   '</div>' + 
                                 '</li>';
-                                    // $('.lists').append(listItem);
-                                    
+              $('.lists').html(function(index, listItem) {
+                if(data.page > 0) {/**ページが０以上のとき下記の処理実行**/
+                  $.each(data.Items, function(i, items) {
+                    
                     console.log(page);
                     console.log(items);
                     console.log(data);
                     console.log(listItem);
                   });
+                  
                   $('.lists').html(listItem);
                 } else {
                   $('.search').after('<div class="message">検索結果が見つかりませんでした。<br>別のキーワードで検索して下さい。</div>');
