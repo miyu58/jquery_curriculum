@@ -76,6 +76,7 @@
             $('.message').empty();
             $('.lists').empty();/**要素の中身を空に（小要素）**/
           }
+          
         
         function callAjax() { /**callAjaxに検索成功時と失敗時の処理を格納**/
           var search = $('#js-search-word').val();/**inputに入力された値を格納**/
@@ -95,11 +96,12 @@
           }).done(function(data) {
             remove();
             pager();
-            if(data.page > 0) {/**ページが０以上のとき下記の処理実行**/
-              $.each(data.Items, function(i, items) {
-                console.log(page);
-                console.log(items);
-                var listItem = '<li class=' + '"lists__item"' + '>' +
+            itemData();
+            function itemData() {
+              $('.lists').html(function(index, listItem) {
+                if(data.page > 0) {/**ページが０以上のとき下記の処理実行**/
+                  $.each(data.Items, function(i, items) {
+                    listItem = '<li class=' + '"lists__item"' + '>' +
                                   '<div class=' + '"lists__item__inner"' + '>' +
                                     '<a href=' + ' class=' + '"lists__item__link"' + 'target=' + '_blank' + '>' +
                                       '<img src="' + items.Item.mediumImageUrl + '" class=' + '"lists__item__img"' + ' alt="商品画像">' +
@@ -109,12 +111,19 @@
                                     '</a>' + 
                                   '</div>' + 
                                 '</li>';
-                $('.lists').html(listItem);/**.lists内の最後に追加**/
-                console.log(data);
-              });
-            } else {
-              $('.search').after('<div class="message">検索結果が見つかりませんでした。<br>別のキーワードで検索して下さい。</div>');
-              $('.js-pager').remove();
+                                    // $('.lists').append(listItem);
+                                    
+                    console.log(page);
+                    console.log(items);
+                    console.log(data);
+                    console.log(listItem);
+                  });
+                  $('.lists').html(listItem);
+                } else {
+                  $('.search').after('<div class="message">検索結果が見つかりませんでした。<br>別のキーワードで検索して下さい。</div>');
+                  $('.js-pager').remove();
+                }
+              });/**.lists内の最後に追加**/
             }
             function pager() {/**関数にページャー格納**/
               var pager = '<div class="js-pager">' + 
