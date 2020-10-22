@@ -48,6 +48,7 @@
         var page = 1;
         var lastPageCount = 1;
         
+        
         $('#js-search-button').on('click', function() {/**検索ボタンクリックイベント**/
           page = 1;/**検索ボタン投下で１ページ目表示**/
           callAjax();
@@ -77,57 +78,8 @@
             $('.message').empty();
             $('.lists').empty();/**要素の中身を空に（小要素）**/
           }
-        
-        function callAjax() { /**callAjaxに検索成功時と失敗時の処理を格納**/
-          var search = $('#js-search-word').val();/**inputに入力された値を格納**/
-          console.log(search);
-          
-          $.ajax ({/**リクエスト**/
-            url: 'https://app.rakuten.co.jp/services/api/BooksTotal/Search/20130522',
-            type: 'GET',
-            datatype: 'json',
-            data: {
-              keyword: search,
-              applicationId: '1019399324990976605',
-              booksGenreId: '001',
-              hits: 20,
-              page: page
-            },
-          }).done(function(data) {
-            remove();
-            pager();
-            itemData();
-            function itemData() {
-              if(data.page > 0) {/**ページが０以上のとき下記の処理実行**/
-                var listItem = '';/**空の宣言　if{}内で宣言しているためL126に反映される**/
-                $.each(data.Items, function(i, items) {
-                  console.log('-----------------------------');
-                  console.log(listItem);
-                  console.log('-----------------------------');
-                  listItem += '<li class=' + '"lists__item"' + '>' +/**再代入**/
-                                '<div class=' + '"lists__item__inner"' + '>' +
-                                  '<a href=' + ' class=' + '"lists__item__link"' + 'target=' + '_blank' + '>' +
-                                    '<img src="' + items.Item.mediumImageUrl + '" class=' + '"lists__item__img"' + ' alt="商品画像">' +
-                                    '<p class=' + '"lists__item__detail"' + '>作品名 :' + items.Item.title + '</p>' +
-                                    '<p class=' + '"lists__item__detail"' + '>作者　:' + items.Item.author + '</p>' +
-                                    '<p class=' + '"lists__item__detail"' + '>出版社 :' + items.Item.publisherName + '</p>' +
-                                  '</a>' + 
-                                '</div>' + 
-                              '</li>';
-                                  
-                  // console.log(page);
-                  // console.log(items);
-                  // console.log(data);
-                  // console.log(typeof listItem);
-                });
-                
-                $('.lists').html(listItem);
-              } else {
-                $('.search').after('<div class="message">検索結果が見つかりませんでした。<br>別のキーワードで検索して下さい。</div>');
-                $('.js-pager').remove();
-              }
-            }
-            function pager() {/**関数にページャー格納**/
+
+          function pager(data) {/**関数にページャー格納**/
               var pager = '<div class="js-pager">' + 
                             '<div class="counter">' + 
                               '<span class="counter-current">' + data.page + '</span>' + '/' +
@@ -150,11 +102,38 @@
                 $('.prev,.next').removeClass('disabled')/**class消去**/
               }
             }
-            
-          }).fail(function(error) {/**失敗じの処理**/
-            remove();
-            failErr();
-            function failErr() {
+
+            function itemData(data) {
+              if(data.page > 0) {/**ページが０以上のとき下記の処理実行**/
+                var listItem = '';/**空の宣言　if{}内で宣言しているためL126に反映される**/
+                $.each(data.Items, function(i, items) {
+                  // console.log('-----------------------------');
+                  // console.log(listItem);
+                  // console.log('-----------------------------');
+                  listItem += '<li class=' + '"lists__item"' + '>' +/**再代入**/
+                                '<div class=' + '"lists__item__inner"' + '>' +
+                                  '<a href=' + ' class=' + '"lists__item__link"' + 'target=' + '_blank' + '>' +
+                                    '<img src="' + items.Item.mediumImageUrl + '" class=' + '"lists__item__img"' + ' alt="商品画像">' +
+                                    '<p class=' + '"lists__item__detail"' + '>作品名 :' + items.Item.title + '</p>' +
+                                    '<p class=' + '"lists__item__detail"' + '>作者　:' + items.Item.author + '</p>' +
+                                    '<p class=' + '"lists__item__detail"' + '>出版社 :' + items.Item.publisherName + '</p>' +
+                                  '</a>' + 
+                                '</div>' + 
+                              '</li>';
+                                  
+                  // console.log(page);
+                  // console.log(items);
+                  console.log(data);
+                  // console.log(typeof listItem);
+                });
+                $('.lists').html(listItem);
+              } else {
+                $('.search').after('<div class="message">検索結果が見つかりませんでした。<br>別のキーワードで検索して下さい。</div>');
+                $('.js-pager').remove();
+              }
+            }
+
+            function failErr(error) {
                 var status = error.status;
                 switch(status) {
                   case 0:/**ネットワークエラー**/
@@ -175,6 +154,30 @@
                 }
                 console.log(error);
               }
+        
+        function callAjax() { /**callAjaxに検索成功時と失敗時の処理を格納**/
+          var search = $('#js-search-word').val();/**inputに入力された値を格納**/
+          console.log(search);
+          
+          $.ajax ({/**リクエスト**/
+            url: 'https://app.rakuten.co.jp/services/api/BooksTotal/Search/20130522',
+            type: 'GET',
+            datatype: 'json',
+            data: {
+              keyword: search,
+              applicationId: '1019399324990976605',
+              booksGenreId: '001',
+              hits: 20,
+              page: page
+            },
+          }).done(function(data) {/**dataの内容をpager/itemDataに渡すと参照できる/errorの内容をfailErrに渡すと参照できる。**/
+            remove();
+            pager(data);
+            itemData(data);
+            
+          }).fail(function(error) {/**失敗じの処理**/
+            remove();
+            failErr(error);
           });
         }
         
