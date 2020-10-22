@@ -98,14 +98,12 @@
                 $('.next').addClass('disabled');
               } else if (page === 1) {
                 $('.prev').addClass('disabled');
-              } else {
-                $('.prev,.next').removeClass('disabled')/**class消去**/
-              }
+              } 
             }
 
             function itemData(data) {
               if(data.page > 0) {/**ページが０以上のとき下記の処理実行**/
-                var listItem = '';/**空の宣言　if{}内で宣言しているためL126に反映される**/
+                var listItem = '';/**空の宣言　if{}内で宣言しているためL129に反映される**/
                 $.each(data.Items, function(i, items) {
                   // console.log('-----------------------------');
                   // console.log(listItem);
@@ -135,23 +133,25 @@
 
             function failErr(error) {
                 var status = error.status;
+                var errorText = '';
                 switch(status) {
                   case 0:/**ネットワークエラー**/
-                    $('.search').after('<div class="message">ネットワークに接続できませんでした。ネットワークを確認してください。</div>');
+                    errorText = 'ネットワークに接続できませんでした。ネットワークを確認してください。'
                     break;
                   case 400:/**パラメーテーエラー**/
-                    $('.search').after('<div class="message">検索文字が空、もしくは半角英数字になっています。</div>');
+                    errorText = '検索文字が空、もしくは半角英数字になっています。';
                     break;
                   case 429:/**リクエスト過多**/
-                    $('.search').after('<div class="message">リクエスト数が上限を達しました。時間を置いてから利用してください。</div>');
+                    errorText = 'リクエスト数が上限を達しました。時間を置いてから利用してください。';
                     break;
                   case 404:/**対象データが存在しなかった**/
-                    $('.search').after('<div class="message">検索したデータが見つかりませんでした。</div>');
+                    errorText = '検索したデータが見つかりませんでした。';
                     break;
                   default:
-                    $('.search').after('<div class="message">error</div>');
+                    errorText = 'error';
                     break;
                 }
+                $('.search').after('<div class="message">' + errorText + '</div>');
                 console.log(error);
               }
         
@@ -161,8 +161,8 @@
           
           $.ajax ({/**リクエスト**/
             url: 'https://app.rakuten.co.jp/services/api/BooksTotal/Search/20130522',
-            type: 'GET',
-            datatype: 'json',
+            type: 'GET',/**URLの後ろに送りたいデータを付与して送ります。保存共有できる**/
+            datatype: 'json',/**サーバーからレスポンスで返ってくるデータ形式を指定**/
             data: {
               keyword: search,
               applicationId: '1019399324990976605',
